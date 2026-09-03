@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WLP // SOC Dashboard</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#070b11;color:#e9eef7;font:14px Inter,Segoe UI,Arial,sans-serif}
+.app{display:grid;grid-template-columns:225px 1fr;min-height:100vh}aside{background:#0a0f17;border-right:1px solid #1d2735;padding:22px 15px}
+.brand{font-weight:800;font-size:17px;margin:0 8px 28px}.brand b{color:#5fe1ff}
+nav a{display:block;text-decoration:none;color:#8290a5;padding:11px 12px;border-radius:8px;margin:3px 0}nav a.active,nav a:hover{color:#fff;background:#131c29}
+main{padding:28px;max-width:1600px;width:100%;margin:auto}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+h1{margin:0;font-size:25px}.sub{color:#7f8ca1;margin-top:4px}.online{color:#4bd47d;background:#0d1c14;border:1px solid #1c5437;border-radius:20px;padding:7px 11px;font-size:11px}
+.grid{display:grid;gap:14px}.metrics{grid-template-columns:repeat(4,1fr)}.two{grid-template-columns:1.7fr 1fr}.three{grid-template-columns:repeat(3,1fr)}
+.card{background:#0d131d;border:1px solid #1d2735;border-radius:12px;padding:17px}.label{font-size:11px;color:#7f8ca1}.num{font-size:28px;font-weight:800;margin:5px 0}.ok{color:#4bd47d}.bad{color:#ff6276}.warn{color:#ffb454}
+.title{font-weight:700}.head{display:flex;justify-content:space-between;margin-bottom:14px}.tag{font-size:10px;color:#8390a5;border:1px solid #273243;padding:4px 7px;border-radius:5px}
+.bars{height:205px;display:flex;align-items:end;gap:5px}.bar{flex:1;background:#5c9df7;min-height:3px;border-radius:3px 3px 0 0;opacity:.85}.axis{display:flex;justify-content:space-between;color:#66748a;font-size:10px;margin-top:7px}
+table{width:100%;border-collapse:collapse}td,th{padding:10px 7px;border-bottom:1px solid #1b2532;text-align:left;font-size:12px}th{color:#748196;font-size:10px}
+.sev{font-weight:800}.critical{color:#ff6276}.high{color:#ffb454}.medium{color:#ffd56d}.pill{background:#151e2b;border-radius:5px;padding:4px 6px;font-size:10px;color:#aeb9ca}
+.track{height:6px;background:#192230;border-radius:5px}.fill{height:100%;background:#5fe1ff;border-radius:5px}.tactic{margin:14px 0}.tt{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+@media(max-width:1000px){.app{grid-template-columns:1fr}aside{display:none}.metrics,.two,.three{grid-template-columns:1fr 1fr}}@media(max-width:650px){main{padding:14px}.metrics,.two,.three{grid-template-columns:1fr}}
+</style></head>
+<body><div class="app"><aside><div class="brand">WLP <b>// SOC</b></div>
+<nav><a class="active" href="#">Overview</a><a href="#alerts">Alerts</a><a href="#events">Events</a><a href="#mitre">MITRE ATT&CK</a><a href="#sources">Sources</a></nav></aside>
+<main><header><div><h1>Windows Log Parser Pro</h1><div class="sub">Security Operations Center</div></div><div class="online">● PARSER ONLINE</div></header>
+<div class="grid metrics">
+<div class="card"><div class="label">TOTAL DE EVENTOS</div><div class="num" id="total">—</div><div class="ok">dados do parser</div></div>
+<div class="card"><div class="label">ALERTAS</div><div class="num bad" id="alerts">—</div><div class="warn">Critical + High</div></div>
+<div class="card"><div class="label">FALHAS DE LOGON</div><div class="num" id="failures">—</div><div>Event ID 4625</div></div>
+<div class="card"><div class="label">IP ÚNICOS</div><div class="num" id="ips">—</div><div>observados nos logs</div></div>
+</div>
+<div class="grid two" style="margin-top:14px"><div class="card"><div class="head"><div class="title">Linha do tempo</div><span class="tag">EVENTOS/HORA</span></div><div class="bars" id="timeline"></div></div>
+<div class="card"><div class="head"><div class="title">MITRE ATT&CK</div><span class="tag">DETALHES</span></div>
+<div id="mitre"><div class="tactic"><div class="tt"><span>Credential Access</span><b>—</b></div><div class="track"><div class="fill" style="width:42%"></div></div></div>
+<div class="tactic"><div class="tt"><span>Persistence</span><b>—</b></div><div class="track"><div class="fill" style="width:28%"></div></div></div>
+<div class="tactic"><div class="tt"><span>Privilege Escalation</span><b>—</b></div><div class="track"><div class="fill" style="width:17%"></div></div></div>
+<div class="tactic"><div class="tt"><span>Defense Evasion</span><b>—</b></div><div class="track"><div class="fill" style="width:13%"></div></div></div></div></div></div>
+<div class="grid two" style="margin-top:14px"><div class="card" id="alertsPanel"><div class="head"><div class="title">Alertas recentes</div><span class="tag">HUNT</span></div>
+<table><thead><tr><th>SEVERIDADE</th><th>REGRA</th><th>DESCRIÇÃO</th></tr></thead><tbody id="alertRows"><tr><td colspan="3">Carregando…</td></tr></tbody></table></div>
+<div class="card"><div class="head"><div class="title">Top Event IDs</div><span class="tag">TOP 5</span></div><table id="eventTable"><tbody></tbody></table></div></div>
+<div class="grid three" style="margin-top:14px"><div class="card"><div class="head"><div class="title">Fontes</div><span class="tag">INPUT</span></div><table id="sourceTable"><tbody></tbody></table></div>
+<div class="card"><div class="head"><div class="title">Top usuários</div><span class="tag">ATIVIDADE</span></div><table id="userTable"><tbody></tbody></table></div>
+<div class="card"><div class="head"><div class="title">Integração</div><span class="tag">API</span></div><p class="sub">O frontend espera um payload em <code>/api/dashboard</code> no formato produzido por <code>dashboard_payload()</code>.</p></div></div>
+</main></div>
+<script>
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function rows(obj){return Object.entries(obj||{}).slice(0,5).map(([k,v])=>`<tr><td>${esc(k)}</td><td><b>${v}</b></td></tr>`).join('')}
+function render(d){
+ const s=d.summary||{}; document.querySelector('#total').textContent=(s.total_events??0).toLocaleString('pt-BR');
+ document.querySelector('#alerts').textContent=(s.alerts??0).toLocaleString('pt-BR');
+ document.querySelector('#failures').textContent=(d.event_ids?.['4625']??0).toLocaleString('pt-BR');
+ document.querySelector('#ips').textContent=(s.unique_ips??0).toLocaleString('pt-BR');
+ document.querySelector('#eventTable tbody').innerHTML=rows(d.event_ids);
+ document.querySelector('#sourceTable tbody').innerHTML=rows(d.sources);
+ document.querySelector('#userTable tbody').innerHTML=rows(d.users);
+ document.querySelector('#alertRows').innerHTML=(d.alerts||[]).slice(0,6).map(a=>`<tr><td class="sev ${String(a.severity||'').toLowerCase()}">${esc(a.severity)}</td><td><span class="pill">${esc(a.rule)}</span></td><td>${esc(a.description)}</td></tr>`).join('')||'<tr><td colspan="3">Nenhum alerta</td></tr>';
+ const vals=Object.values(d.timeline||{}).slice(-36), max=Math.max(...vals,1);
+ document.querySelector('#timeline').innerHTML=vals.map(v=>`<div class="bar" title="${v} eventos" style="height:${Math.max(3,v/max*100)}%"></div>`).join('');
+}
+fetch('/api/dashboard').then(r=>r.ok?r.json():Promise.reject()).then(render).catch(()=>{
+ render({summary:{total_events:128493,alerts:27,unique_ips:1294},event_ids:{'4625':3421,'4624':18204,'4688':15887,'4740':412,'1102':2},sources:{'Security.evtx':'72%','System.evtx':'16%','IIS/W3C':'7%','JSONL/SIEM':'5%'},users:{Administrator:4820,svc_backup:2104,john_smith:1483,svc_web:932},timeline:Object.fromEntries(Array.from({length:36},(_,i)=>[i,20+Math.round(Math.random()*90)])),alerts:[{severity:'Critical',rule:'log_cleared',description:'Log de auditoria limpo — possível cobertura de rastros.'},{severity:'High',rule:'brute_force_rdp',description:"Falhas de autenticação concentradas em uma conta."}]});
+});
+</script></body></html>
